@@ -14,7 +14,7 @@ func MSSQLExecute(tableName string, path string) error {
 
 	path = createDirectory(path)
 
-	db = database.CreateMSSqlConnection("localhost", "store_sahin", "sa", "q1w2e3r4!", 0)
+	db = database.CreateMSSqlConnection("localhost", "test", "sa", "test", 0)
 	if err = db.Connection(); err != nil {
 		return err
 	}
