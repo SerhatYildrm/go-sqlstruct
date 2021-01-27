@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli"
 
-	"gocompare/commands"
+	"go-sqlstruct/commands"
 )
 
 func main() {

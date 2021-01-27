@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"reflect"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
@@ -73,10 +72,33 @@ func (m *MSSql) GetColumnsInformation(TableName string) (map[string]interface{},
 			return nil, err
 		}
 
-		for i, col := range cols {
-			results[colNames[i]] = reflect.TypeOf(col)
+		colTypes, err := rows.ColumnTypes()
+		if err != nil {
+			return nil, err
+		}
+		/*for i, col := range cols {
+			//results[colNames[i]] = reflect.TypeOf(col)
+			results[colNames[i]] = colTypes[i].DatabaseTypeName()
+		}*/
+
+		var sqlType string
+		for i := 0; i < len(cols); i++ {
+			sqlType = colTypes[i].DatabaseTypeName()
+			results[colNames[i]] = ConvertColumnType(sqlType)
 		}
 	}
 
 	return results, nil
+}
+
+// ConvertColumnType ...
+func ConvertColumnType(columnType string) string {
+	if columnType == "INT" || columnType == "BIT" {
+		return "int"
+	} else if columnType == "NVARCHAR" {
+		return "string"
+	} else if columnType == "DATETIME" {
+		return "time.Time"
+	}
+	return "interface{}"
 }
